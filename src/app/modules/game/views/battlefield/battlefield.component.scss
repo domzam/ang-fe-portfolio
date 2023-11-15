@@ -1,0 +1,83 @@
+@import 'colors';
+
+.container {
+    width: 50%;
+    margin: 0 auto;
+
+    .start-game {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .start-game-button:last-child {
+            margin-top: 1rem;
+        }
+    }
+
+    .game-loading-text {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .game-loading-progress {
+        width: 12rem;
+        margin: 0 auto;
+    }
+
+    .battlefield-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+
+        .player,
+        .computer {
+            width: 40%;
+        }
+    }
+
+    .battlefield-game {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 2rem;
+
+        .select {
+            display: block;
+            width: 10rem;
+            margin: 0 auto;
+        }
+
+        .img {
+            height: 10rem;
+            display: block;
+            margin: 0 auto 1rem;
+        }
+
+        .play {
+            display: flex;
+            justify-content: center;
+
+            .play-button {
+                font-size: 2rem;
+                padding: 1.5rem;
+
+                &:last-child {
+                    margin-top: 1rem;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 1500px) {
+        width: 65%;
+    }
+
+    @media (max-width: 1200px) {
+        width: 80%;
+    }
+
+    @media (max-width: 992px) {
+        width: 95%;
+    }
+}

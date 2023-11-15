@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="player-name-result">
+        <ng-container *ngIf="playerName">
+            <span class="player-name">{{ (label + ': ' + playerName) | uppercase }}</span>
+            <span class="player-result">{{ playerWinCount }} / 5</span>
+        </ng-container>
+        <ng-container *ngIf="!playerName">
+            <span class="player-result">{{ playerWinCount }} / 5</span>
+            <span class="player-name">{{ label | uppercase }}</span>
+        </ng-container>
+    </div>
+
+    <mat-progress-bar mode="determinate"
+                      [class.reverse]="reverse"
+                      [value]="progress"></mat-progress-bar>
+    <div *ngIf="isWinner"
+         class="winner">
+        <div>WINNER</div>
+    </div>
+</div>

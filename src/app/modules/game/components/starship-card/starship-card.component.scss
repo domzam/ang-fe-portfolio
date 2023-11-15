@@ -1,0 +1,63 @@
+@import 'colors';
+
+.card {
+    width: 15rem;
+    min-height: 30rem;
+
+    .spinner {
+        margin: auto;
+    }
+
+    .header {
+        margin-bottom: 1rem;
+    }
+
+    .img {
+        width: 80%;
+        border-radius: 10px;
+        margin: 0 auto 1rem;
+    }
+
+    .divider {
+        width: 90%;
+        margin: 0 auto 1rem;
+    }
+
+    .property {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.3rem;
+
+        &.common {
+            font-weight: 700;
+            color: $primary-color;
+        }
+
+        .property__name {
+            margin-right: 1rem;
+        }
+
+        .truncate {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+    &.winner {
+        box-shadow: 0px 0px 15px $primary-color;
+    }
+
+    &.loser {
+        opacity: 0.5;
+    }
+
+    &.draw {
+        box-shadow: 0px 0px 15px #777;
+        opacity: 0.7;
+    }
+
+    &.final-winner {
+        box-shadow: 0px 0px 20px $accent-color;
+    }
+}

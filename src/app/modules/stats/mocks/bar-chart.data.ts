@@ -1,0 +1,1 @@
+export const BAR_CHART_DATA = [70, 77, 44, 33, 22, 11];

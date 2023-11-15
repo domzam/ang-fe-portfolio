@@ -1,0 +1,28 @@
+@import 'colors';
+
+.container {
+    position: relative;
+
+    .player-name-result {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .reverse {
+        transform: scaleX(-1);
+    }
+
+    .winner {
+        position: absolute;
+        top: 0;
+        text-align: center;
+        font-weight: 600;
+        color: white;
+        background-color: $accent-color;
+        opacity: 0.8;
+        width: 100%;
+        height: 100%;
+        padding: 5px 0;
+    }
+}
