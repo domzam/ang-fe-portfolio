@@ -1,0 +1,1 @@
+export const DONUT_CHART_DATA = [60, 50];

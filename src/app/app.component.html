@@ -1,0 +1,3 @@
+<app-header [isPlaying]="(isPlaying$ | async) === true"
+            (endGameEvent)="endGame()"></app-header>
+<router-outlet></router-outlet>

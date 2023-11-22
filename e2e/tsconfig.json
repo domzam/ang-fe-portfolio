@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noEmit": true,
+    "types": ["cypress"]
+  },
+  "include": [
+    "node_modules/cypress",
+    "**/*.ts"
+  ]
+}

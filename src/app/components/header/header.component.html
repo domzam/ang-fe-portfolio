@@ -1,0 +1,11 @@
+<mat-toolbar class="header"
+             color="primary">
+      <span class="item first"
+            routerLink="/battlefield">Play a game</span>
+      <span class="item"
+            routerLink="/stats">Stats</span>
+
+      <span *ngIf="isPlaying === true"
+            class="item end-game"
+            (click)="onEndGame()">END GAME</span>
+</mat-toolbar>

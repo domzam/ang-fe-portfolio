@@ -1,0 +1,19 @@
+@import 'colors';
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-mdc-snack-bar-container {
+    &.warning {
+        --mdc-snackbar-container-color: #f44336;
+        --mat-snack-bar-button-color: white;
+        --mdc-snackbar-supporting-text-color: white;
+    }
+}
