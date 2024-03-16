@@ -1,0 +1,71 @@
+.game {
+  grid-template-columns: 5fr 1fr;
+  margin: 3.2rem 0;
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.game-loading,
+.section-game-header,
+.section-game {
+    padding: 3.2rem 0;
+}
+
+.game-loading-text,
+.game-loading-progress {
+  display: flex;
+  justify-content: center;
+  padding: 1.2rem 0;
+}
+
+.game-loading-text {
+  font-size: 1.6rem;
+}
+
+.play-game-text {
+  font-size: 1.6rem;
+  line-height: 2.5;
+  padding: 3.2rem 0;
+  display: inline-block;
+
+  strong {
+    font-weight: 500;
+    color: white;
+    background-color: #bbb;
+    padding: 0.8rem 1.6rem;
+    border-radius: 5px;
+  }
+}
+
+.play-game-fail {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6rem;
+  padding: 3.2rem 0;
+  color: #999;
+}
+
+@media (max-width: 62.5em) {
+  .game {
+    grid-template-columns: 1fr;
+    row-gap: 1.2rem;
+
+    .control {
+      order: -1;
+    }
+  }
+}
+
+@media (max-width: 45em) {
+  .container {
+    padding: 0 1.2rem;
+
+    .cards {
+      gap: 1.2rem;
+    }
+  }
+}

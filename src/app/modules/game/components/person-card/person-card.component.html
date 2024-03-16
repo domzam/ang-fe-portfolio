@@ -1,0 +1,44 @@
+<app-card [name]="person?.name"
+          [description]="person?.description"
+          [common]="person?.mass"
+          [isLoading]="isLoading"
+          [score]="score"
+          [isWinner]="isWinner"
+          [isLoser]="isLoser"
+          [scoreLimit]="scoreLimit"
+          [computerLayout]="computerLayout"
+          [class.hero]="!computerLayout"
+          [class.villain]="computerLayout">
+
+    <ng-container propertyCommon>
+        <span class="common">MASS {{ person?.mass }}</span>
+    </ng-container>
+
+    <ng-container properties>
+        <div class="properties">
+            <app-card-property class="property"
+                               label="Height"
+                               [value]="person?.height"></app-card-property>
+
+            <app-card-property class="property"
+                               label="Hair color"
+                               [value]="person?.hairColor"></app-card-property>
+
+            <app-card-property class="property"
+                               label="Skin color"
+                               [value]="person?.skinColor"></app-card-property>
+
+            <app-card-property class="property"
+                               label="Eye color"
+                               [value]="person?.eyeColor"></app-card-property>
+
+            <app-card-property class="property"
+                               label="Birth year"
+                               [value]="person?.birthYear"></app-card-property>
+
+            <app-card-property class="property"
+                               label="Gender"
+                               [value]="person?.gender"></app-card-property>
+        </div>
+    </ng-container>
+</app-card>

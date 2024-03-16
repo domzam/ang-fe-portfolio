@@ -3,7 +3,6 @@ import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NgApexchartsModule } from "ng-apexcharts";
-import { BattleResultDirective } from './directives/battle-result.directive';
 
 
 @NgModule({
@@ -17,11 +16,8 @@ import { BattleResultDirective } from './directives/battle-result.directive';
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
-    NgApexchartsModule,
-    BattleResultDirective
+    NgApexchartsModule
   ],
-  declarations: [
-    BattleResultDirective
-  ]
+  declarations: []
 })
 export class SharedModule { }

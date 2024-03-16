@@ -1,0 +1,23 @@
+.game-header,
+.game-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+
+    button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 62.5em) {
+    .game-header {
+        justify-content: space-between;
+        align-items: baseline;
+    }
+
+    .game-header,
+    .game-buttons {
+        flex-direction: row;
+    }
+}

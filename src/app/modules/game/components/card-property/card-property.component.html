@@ -1,0 +1,12 @@
+<div class="property">
+    <span class="property__value">
+        <ng-container *ngIf="value !== 'unknown'">
+            {{ value }}
+        </ng-container>
+        <ng-container *ngIf="value === 'unknown'">
+            <mat-icon fontIcon="help"
+                      matTooltip="unknown value"></mat-icon>
+        </ng-container>
+    </span>
+    <span class="property__name">{{ label }}</span>
+</div>

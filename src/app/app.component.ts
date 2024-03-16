@@ -1,28 +1,9 @@
-import { Component, inject } from '@angular/core';
-import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { GameSelectors } from './modules/game/state/game.selectors';
-import { Game } from './modules/game/state/game.actions';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
-
-  private store = inject(Store);
-
-  @Select(GameSelectors.isPlaying) isPlaying$!: Observable<boolean>;
-
-  endGame() {
-    this.store.dispatch([
-      new Game.End(),
-      new Game.CardsReloaded(),
-      new Game.ResetResults(),
-      new Game.ResetScors(),
-      new Game.ResetPlayers()
-    ]);
-  }
-
-}
+export class AppComponent {}

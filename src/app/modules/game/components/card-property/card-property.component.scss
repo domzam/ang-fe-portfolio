@@ -1,0 +1,28 @@
+.property {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 1.6rem;
+  text-align: center;
+
+  .property__value {
+    font-weight: 500;
+    font-size: 1.8rem;
+
+    mat-icon {
+      font-size: 1.8rem;
+    }
+  }
+
+  .property__value:has(mat-icon) {
+    height: 1.8rem;
+  }
+
+  .property__name {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+}

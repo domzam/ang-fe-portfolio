@@ -9,7 +9,7 @@ export class SnackbarService {
   private snackbar = inject(MatSnackBar);
 
   openAsWarning(message: string) {
-    this.snackbar.open(message, 'CLOSE', { panelClass: ['warning'], duration: 5_000 });
+    this.snackbar.open(message, 'CLOSE', { panelClass: ['warning'], duration: 15_000 });
   }
 
 }

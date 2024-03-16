@@ -7,8 +7,7 @@
 
   .hero {
     .card {
-      &.winner,
-      &.final-winner {
+      &.winner {
         box-shadow: 0px 0px 25px $hero-dark-color;
       }
     }
@@ -16,8 +15,7 @@
 
   .villain {
     .card {
-      &.winner,
-      &.final-winner {
+      &.winner {
         box-shadow: 0px 0px 25px $villain-dark-color;
       }
     }
@@ -47,6 +45,6 @@
 }
 
 .properties {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 }
