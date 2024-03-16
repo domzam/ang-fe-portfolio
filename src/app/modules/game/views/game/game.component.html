@@ -1,0 +1,78 @@
+<div class="container">
+    <div class="game grid">
+        <div>
+            <div *ngIf="isCharactersLoading$ | async"
+                 class="game-loading">
+                <div class="game-loading-text">
+                    <span>Characters are loading ...</span>
+                </div>
+
+                <div class="game-loading-progress">
+                    <mat-spinner></mat-spinner>
+                </div>
+            </div>
+
+            <div *ngIf="!(isCharactersLoading$ | async) && !(isPlaying$ | async)"
+                 class="center-text">
+                <span *ngIf="isCharactersLoaded$ | async"
+                      class="play-game-text">
+                    Start a game by selecting <strong>PLAY A GAME</strong> button
+                </span>
+
+                <span *ngIf="!(isCharactersLoaded$ | async)"
+                      class="play-game-fail">
+                    <mat-icon aria-hidden="false"
+                              aria-label="Failed to load characters"
+                              fontIcon="error"></mat-icon> Failed to load characters</span>
+            </div>
+
+            <div *ngIf="isPlaying$ | async"
+                 class="cards grid">
+                <app-person-card *ngIf="(gameOption$ | async) === peopleGame"
+                                 [person]="toPerson(player$ | async)"
+                                 [isLoading]="isCharacterDetailsLoading$ | async"
+                                 [score]="playerScore$ | async"
+                                 [isWinner]="(winner$ | async) === playerWins"
+                                 [isLoser]="(winner$ | async) === computerWins"
+                                 [scoreLimit]="scoreLimit"></app-person-card>
+
+                <app-starship-card *ngIf="(gameOption$ | async) === starshipGame"
+                                   [starship]="toStarship(player$ | async)"
+                                   [isLoading]="isCharacterDetailsLoading$ | async"
+                                   [score]="playerScore$ | async"
+                                   [isWinner]="(winner$ | async) === playerWins"
+                                   [isLoser]="(winner$ | async) === computerWins"
+                                   [scoreLimit]="scoreLimit"></app-starship-card>
+
+                <app-person-card *ngIf="(gameOption$ | async) === peopleGame"
+                                 [person]="toPerson(computer$ | async)"
+                                 [isLoading]="isCharacterDetailsLoading$ | async"
+                                 [score]="computerScore$ | async"
+                                 [isWinner]="(winner$ | async) === computerWins"
+                                 [isLoser]="(winner$ | async) === playerWins"
+                                 [scoreLimit]="scoreLimit"
+                                 [computerLayout]="true"></app-person-card>
+
+                <app-starship-card *ngIf="(gameOption$ | async) === starshipGame"
+                                   [starship]="toStarship(computer$ | async)"
+                                   [isLoading]="isCharacterDetailsLoading$ | async"
+                                   [score]="computerScore$ | async"
+                                   [isWinner]="(winner$ | async) === computerWins"
+                                   [isLoser]="(winner$ | async) === playerWins"
+                                   [scoreLimit]="scoreLimit"
+                                   [computerLayout]="true"></app-starship-card>
+            </div>
+        </div>
+
+        <div class="control">
+            <app-game-header [gameOption]="(gameOption$) | async"
+                             [isPlaying]="isPlaying$ | async"
+                             [isCharactersLoading]="(isCharactersLoading$ | async)"
+                             [isCharactersLoaded]="isCharactersLoaded$ | async"
+                             [isCharacterDetailsLoading]="isCharacterDetailsLoading$ | async"
+                             [nextGame]="(computerScore$ | async) === scoreLimit || (playerScore$ | async) === scoreLimit"
+                             (gameEvent)="game($event)"
+                             (gameOptionEvent)="onGameOptionUpdate($event)"></app-game-header>
+        </div>
+    </div>
+</div>

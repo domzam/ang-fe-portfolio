@@ -1,227 +1,281 @@
 import { Injectable, inject } from "@angular/core";
 import { Action, State, StateContext } from "@ngxs/store";
-import { catchError, combineLatestWith, tap } from "rxjs";
-import { BattleResult } from "../models/battle-result.enum";
+import { catchError, combineLatestWith, map, tap } from "rxjs";
 import { SwapiService } from "../services/swapi.service";
 import { GameStateModel } from "./game.model";
 import { Random } from "../../../modules/shared/utils/random";
-import { GameService } from "../../../modules/game/services/game.service";
-import { GameOption } from "../../../modules/game/models/game-option.enum";
-import { SnackbarService } from "../../../modules/shared/services/snackbar.service";
+import { GameOption } from "../enums/game-option.enum";
 import { Game } from "./game.actions";
+import { PersonMapper } from "../mappers/person.mapper";
+import { Winner } from "../enums/winner.enum";
+import { PersonDetails } from "../models/people/person-details.model";
+import { StarshipDetails } from "../models/starships/starship-details.model";
+import { StarshipMapper } from "../mappers/starship.mapper";
+import { SnackbarService } from "../../shared/services/snackbar.service";
 
 @State<GameStateModel>({
   name: 'game',
   defaults: {
     isPlaying: false,
-    isLoading: false,
-    cardsReloading: false,
-    characters: [],
-    ships: [],
+    isCharactersLoading: false,
+    isCharacterDetailsLoading: false,
+
+    ids: [],
     player: null,
-    playerStarships: null,
+    playerScore: 0,
     computer: null,
-    computerStarships: null,
-    playerResult: BattleResult.None,
-    computerResult: BattleResult.None,
-    playerWinCount: 0,
-    computerWinCount: 0,
-    isFinalWinner: false,
-    gameOption: GameOption.People
+    computerScore: 0,
+    winner: Winner.None,
+
+    gameOption: GameOption.People,
+    scoreLimit: 5
   }
 })
 @Injectable()
 export class GameState {
 
   private swapi = inject(SwapiService);
-  private gameService = inject(GameService);
   private snackbarService = inject(SnackbarService);
 
-  @Action(Game.IsLoading)
-  isLoading(ctx: StateContext<GameStateModel>) {
-    ctx.setState((state) => ({ ...state, isLoading: true }));
+  @Action(Game.ClearCharactersList)
+  clearCharactersList(ctx: StateContext<GameStateModel>) {
+    ctx.setState((state) => ({ ...state, ids: [] }));
   }
 
-  @Action(Game.IsLoaded)
-  isLoaded(ctx: StateContext<GameStateModel>) {
-    ctx.setState((state) => ({ ...state, isLoading: false }));
+  @Action(Game.CharactersLoading)
+  charactersLoading(ctx: StateContext<GameStateModel>) {
+    ctx.setState((state) => ({ ...state, isCharactersLoading: true }));
   }
 
-  @Action(Game.CardsReloading)
-  cardsReloading(ctx: StateContext<GameStateModel>) {
-    ctx.setState((state) => ({ ...state, cardsReloading: true }));
-  }
-
-  @Action(Game.CardsReloaded)
-  cardsLoaded(ctx: StateContext<GameStateModel>) {
-    ctx.setState((state) => ({ ...state, cardsReloading: false }));
+  @Action(Game.CharactersLoaded)
+  charactersLoaded(ctx: StateContext<GameStateModel>) {
+    ctx.setState((state) => ({ ...state, isCharactersLoading: false }));
   }
 
   @Action(Game.Start)
   start(ctx: StateContext<GameStateModel>) {
     ctx.setState((state) => ({ ...state, isPlaying: true }));
+    return ctx.dispatch([
+      new Game.CharacterDetailsLoading(),
+      new Game.CardsShuffle()
+    ]);
   }
 
   @Action(Game.End)
   end(ctx: StateContext<GameStateModel>) {
     ctx.setState((state) => ({ ...state, isPlaying: false }));
+    return ctx.dispatch(new Game.ResetScore())
   }
 
-  @Action(Game.ResetResults)
-  resetResults(ctx: StateContext<GameStateModel>) {
-    ctx.setState((state) => ({
-      ...state,
-      playerResult: BattleResult.None,
-      computerResult: BattleResult.None
-    }));
+  @Action(Game.PlayAgain)
+  playAgain(ctx: StateContext<GameStateModel>) {
+    return ctx.dispatch([
+      new Game.ResetScore(),
+      new Game.CardsShuffle()
+    ]);
   }
 
-  @Action(Game.ResetScors)
-  resetScores(ctx: StateContext<GameStateModel>) {
-    ctx.setState((state) => ({
-      ...state,
-      playerWinCount: 0,
-      computerWinCount: 0,
-      isFinalWinner: false
-    }));
+  @Action(Game.CharacterDetailsLoading)
+  characterDetailsLoading(ctx: StateContext<GameStateModel>) {
+    ctx.setState((state) => ({ ...state, isCharacterDetailsLoading: true, winner: Winner.None }));
   }
 
-  @Action(Game.ResetPlayers)
-  resetPlayers(ctx: StateContext<GameStateModel>) {
-    ctx.setState((state) => ({
-      ...state,
-      player: null,
-      computer: null,
-      playerStarships: null,
-      computerStarships: null
-    }));
-    this.gameService.resetImages();
+  @Action(Game.CharacterDetailsLoaded)
+  cardsLoaded(ctx: StateContext<GameStateModel>) {
+    ctx.setState((state) => ({ ...state, isCharacterDetailsLoading: false }));
   }
 
-  @Action(Game.LoadCharacters)
-  loadCharacters(ctx: StateContext<GameStateModel>) {
+  @Action(Game.LoadPeopleList)
+  loadPeopleList(ctx: StateContext<GameStateModel>) {
+    ctx.dispatch(new Game.CharactersLoading());
     return this.swapi.getPeople().pipe(
-      tap((people) => {
-        ctx.setState((state) => ({ ...state, characters: people.results }));
+      map((response) => response.results),
+      map((people) => people.map(p => p.uid)),
+      tap((ids) => {
+        ctx.setState((state) => ({ ...state, ids }));
+        ctx.dispatch(new Game.CharactersLoaded())
+        if (!ids.length) ctx.dispatch(new Game.EmptyCharactersListError());
       }),
-      tap(() => ctx.dispatch(new Game.IsLoaded()))
+      catchError(() => ctx.dispatch(new Game.LoadPeopleListFailed()))
     );
   }
 
-  @Action(Game.LoadGame)
-  loadGame(ctx: StateContext<GameStateModel>, action: Game.LoadGame) {
-    return this.swapi.getPeople().pipe(
-      tap((people) => {
-        if (action.evokeError) throw new Error();
-        ctx.setState((state) => ({ ...state, characters: people.results }));
+  @Action(Game.LoadPeopleListFailed)
+  loadPeopleListFailed(ctx: StateContext<GameStateModel>) {
+    this.snackbarService.openAsWarning('Load people failed');
+    return ctx.dispatch([
+      new Game.ClearCharactersList(),
+      new Game.CharactersLoaded()
+    ]);
+  }
+
+  @Action(Game.LoadStarshipsList)
+  loadStarshipsList(ctx: StateContext<GameStateModel>) {
+    ctx.dispatch(new Game.CharactersLoading());
+    return this.swapi.getStarships().pipe(
+      map((response) => response.results),
+      map((starships) => starships.map(s => s.uid)),
+      tap((ids) => {
+        ctx.setState((state) => ({ ...state, ids }));
+        ctx.dispatch(new Game.CharactersLoaded())
+        if (!ids.length) ctx.dispatch(new Game.EmptyCharactersListError());
       }),
-      combineLatestWith(this.swapi.getStarships().pipe(
-        tap((ships) => { ctx.setState((state) => ({ ...state, ships: ships.results })); })
-      )),
-      tap(() => ctx.dispatch(new Game.IsLoaded())),
-      catchError(() => {
-        this.snackbarService.openAsWarning('[Game Loading] Something went wrong');
-        return ctx.dispatch(new Game.End());
-      })
+      catchError(() => ctx.dispatch(new Game.LoadStarshipsListFailed()))
     );
+  }
+
+  @Action(Game.LoadStarshipsListFailed)
+  loadStarshipsListFailed(ctx: StateContext<GameStateModel>) {
+    this.snackbarService.openAsWarning('Load starships failed');
+    return ctx.dispatch([
+      new Game.ClearCharactersList(),
+      new Game.CharactersLoaded()
+    ]);
+  }
+
+  @Action(Game.EmptyCharactersListError)
+  emptyCharactersListError(ctx: StateContext<GameStateModel>) {
+    this.snackbarService.openAsWarning('Empty characters list');
+    return ctx.dispatch([]);
   }
 
   @Action(Game.CardsShuffle)
-  cardsShuffle(ctx: StateContext<GameStateModel>, action: Game.CardsShuffle) {
+  cardsShuffle(ctx: StateContext<GameStateModel>) {
     const state = ctx.getState();
+    const [playerId, computerId] = Random.getRandomIds(state.ids);
+    ctx.dispatch(new Game.CharacterDetailsLoading())
+
     switch (state.gameOption) {
       case GameOption.People:
-        return this.swapi.getPerson(Random.getRandomId(state.characters)).pipe(
-          tap((person) => {
-            if (action.evokeError) throw new Error();
-            ctx.setState((state) => ({ ...state, player: person.result }));
-          }),
-          combineLatestWith(this.swapi.getPerson(Random.getRandomId(state.characters)).pipe(
-            tap((person) => ctx.setState((state) => ({ ...state, computer: person.result }))),
-          )),
+        return this.shufflePersons(ctx, playerId, computerId).pipe(
           tap(() => {
-            this.gameService.shufflePeopleImages();
-            ctx.dispatch([new Game.SetWinner(), new Game.CardsReloaded()]);
+            ctx.dispatch([
+              new Game.CharacterDetailsLoaded(),
+              new Game.UpdateScore()
+            ]);
           }),
           catchError(() => ctx.dispatch(new Game.CardsShuffleFailed()))
         );
       case GameOption.Starships:
-        return this.swapi.getStarship(Random.getRandomId(state.ships)).pipe(
-          tap((ship) => {
-            if (action.evokeError) throw new Error();
-            ctx.setState((state) => ({ ...state, playerStarships: ship.result }));
-          }),
-          combineLatestWith(this.swapi.getStarship(Random.getRandomId(state.ships)).pipe(
-            tap((ship) => ctx.setState((state) => ({ ...state, computerStarships: ship.result }))),
-          )),
+        return this.shuffleStarships(ctx, playerId, computerId).pipe(
           tap(() => {
-            this.gameService.shuffleShipsImages();
-            ctx.dispatch([new Game.SetWinner(), new Game.CardsReloaded()]);
+            ctx.dispatch([
+              new Game.CharacterDetailsLoaded(),
+              new Game.UpdateScore()
+            ]);
           }),
           catchError(() => ctx.dispatch(new Game.CardsShuffleFailed()))
         );
       default:
-        return ctx.dispatch([
-          new Game.ResetResults(),
-          new Game.ResetPlayers(),
-          new Game.CardsReloaded()
-        ]);
+        return ctx.dispatch(new Game.CardsShuffleFailed());
     }
   }
 
   @Action(Game.CardsShuffleFailed)
   cardsShuffleFailed(ctx: StateContext<GameStateModel>) {
-    this.snackbarService.openAsWarning('[Cards Shuffle] Something went wrong');
-    return ctx.dispatch([
-      new Game.ResetResults(),
-      new Game.ResetPlayers(),
-      new Game.CardsReloaded(),
-    ]);
+    this.snackbarService.openAsWarning('Load character details failed');
+    ctx.setState((state) => ({...state, player: null, computer: null}));
+    return ctx.dispatch(new Game.CharacterDetailsLoaded());
   }
-  @Action(Game.SetWinner)
-  setWinner(ctx: StateContext<GameStateModel>) {
+
+  @Action(Game.UpdateScore)
+  updateScore(ctx: StateContext<GameStateModel>) {
     const state = ctx.getState();
-    let playerCommonParam = 0;
-    let computerCommonParam = 0;
-    switch (state.gameOption) {
-      case GameOption.People:
-        playerCommonParam = parseFloat(state.player?.properties.mass ?? '') || 0;
-        computerCommonParam = parseFloat(state.computer?.properties.mass ?? '') || 0;
-        break;
-      case GameOption.Starships:
-        playerCommonParam = parseFloat(state.playerStarships?.properties.crew ?? '') || 0;
-        computerCommonParam = parseFloat(state.computerStarships?.properties.crew ?? '') || 0;
-        break;
-      default:
-        break;
+    const gameOption = state.gameOption;
+    const playerCommon = this.getCommonPropertyValue(state.player, gameOption);
+    const computerCommon = this.getCommonPropertyValue(state.computer, gameOption);
+    let winner = Winner.None;
+    if (playerCommon > computerCommon) {
+      state.playerScore++;
+      winner = Winner.Player;
     }
-    if (playerCommonParam > computerCommonParam) {
-      ctx.setState({
-        ...state,
-        playerResult: state.playerWinCount === 4 ? BattleResult.FinalWinner : BattleResult.Winner,
-        computerResult: BattleResult.Loser,
-        playerWinCount: state.playerWinCount + 1,
-        isFinalWinner: state.playerWinCount === 4
-      });
-    } else if (playerCommonParam < computerCommonParam) {
-      ctx.setState({
-        ...state,
-        playerResult: BattleResult.Loser,
-        computerResult: state.computerWinCount === 4 ? BattleResult.FinalWinner : BattleResult.Winner,
-        computerWinCount: state.computerWinCount + 1,
-        isFinalWinner: state.computerWinCount === 4
-      });
-    } else {
-      ctx.setState({
-        ...state,
-        playerResult: BattleResult.Draw,
-        computerResult: BattleResult.Draw
-      });
+    else if (playerCommon < computerCommon) {
+      state.computerScore++;
+      winner = Winner.Computer;
     }
+    ctx.setState((currentState) => ({
+      ...currentState,
+      playerScore: state.playerScore,
+      computerScore: state.computerScore,
+      winner: winner
+    }));
+  }
+
+  @Action(Game.ResetScore)
+  resetScore(ctx: StateContext<GameStateModel>) {
+    ctx.setState((state) => ({
+      ...state,
+      winner: Winner.None,
+      playerScore: 0,
+      computerScore: 0
+    }));
   }
 
   @Action(Game.UpdateGameOption)
   updateGameOption(ctx: StateContext<GameStateModel>, action: Game.UpdateGameOption) {
-    ctx.setState((state) => ({ ...state, gameOption: action.option }));
+    ctx.setState((state) => ({
+      ...state,
+      gameOption: action.option,
+      ids: [],
+      isCharactersLoading: true
+    }));
+
+    switch (action.option) {
+      case GameOption.People:
+        return ctx.dispatch(new Game.LoadPeopleList());
+      case GameOption.Starships:
+        return ctx.dispatch(new Game.LoadStarshipsList());
+      default:
+        return ctx.dispatch(new Game.EmptyCharactersListError());
+    }
+  }
+
+  private shufflePersons(ctx: StateContext<GameStateModel>, playerId: string, computerId: string) {
+    return this.swapi.getPerson(playerId).pipe(
+      tap((person) => {
+        ctx.setState((state) => ({
+          ...state,
+          player: PersonMapper.map(person)
+        }));
+      }),
+      combineLatestWith(this.swapi.getPerson(computerId).pipe(
+        tap((person) => {
+          ctx.setState((state) => ({
+            ...state,
+            computer: PersonMapper.map(person)
+          }));
+        })
+      ))
+    )
+  }
+
+  private shuffleStarships(ctx: StateContext<GameStateModel>, playerId: string, computerId: string) {
+    return this.swapi.getStarship(playerId).pipe(
+      tap((starship) => {
+        ctx.setState((state) => ({
+          ...state,
+          player: StarshipMapper.map(starship)
+        }));
+      }),
+      combineLatestWith(this.swapi.getStarship(computerId).pipe(
+        tap((starship) => {
+          ctx.setState((state) => ({
+            ...state,
+            computer: StarshipMapper.map(starship)
+          }));
+        })
+      ))
+    )
+  }
+
+  private getCommonPropertyValue(player: PersonDetails | StarshipDetails | null, gameOption: GameOption): number {
+    switch (gameOption) {
+      case GameOption.People:
+        return parseFloat((player as PersonDetails)?.mass ?? '') || 0;
+      case GameOption.Starships:
+        return parseFloat((player as StarshipDetails)?.crew ?? '') || 0;
+      default:
+        return 0;
+    }
   }
 }

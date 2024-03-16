@@ -1,0 +1,56 @@
+<div class="card-header">
+    <div class="card-header-text">
+        <ng-container *ngIf="!computerLayout">
+            <span class="player-label">PLAYER</span>
+            <span class="score">{{ score }} / {{ scoreLimit }}</span>
+        </ng-container>
+        <ng-container *ngIf="computerLayout">
+            <span class="score">{{ score }} / {{ scoreLimit }}</span>
+            <span class="player-label">COMPUTER</span>
+        </ng-container>
+    </div>
+    <div class="progress"
+         [class.reverse]="computerLayout">
+        <mat-progress-bar mode="determinate"
+                          [class]="computerLayout ? 'villain' : 'hero'"
+                          [value]="(score ?? 0) * 20"></mat-progress-bar>
+    </div>
+</div>
+
+<div class="card-container">
+    <mat-card class="card"
+              [class.winner]="isWinner"
+              [class.loser]="isLoser"
+              [class.final-winner]="score === scoreLimit">
+        <mat-spinner *ngIf="isLoading"
+                     class="spinner"></mat-spinner>
+
+        <ng-container *ngIf="!isLoading && name">
+            <img mat-card-image
+                 [src]="!computerLayout ? '/assets/img/game/swh-good.jpg' : '/assets/img/game/swh-bad.jpg'"
+                 alt="Photo of Star Wars heros">
+
+            <mat-card-header class="header">
+                <mat-card-subtitle class="header-common">
+                    <ng-content select="[propertyCommon]"></ng-content>
+                </mat-card-subtitle>
+                <mat-card-title class="header-title empty">
+                    {{ name }}
+                </mat-card-title>
+                <mat-card-subtitle class="header-subtitle">
+                    {{ description }}
+                </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="content">
+                <ng-content select="[properties]"></ng-content>
+            </mat-card-content>
+        </ng-container>
+
+        <ng-container *ngIf="!isLoading && !name">
+            <mat-icon class="error-icon"
+                      aria-hidden="false"
+                      aria-label="Failed to load details"
+                      fontIcon="error"></mat-icon>
+        </ng-container>
+    </mat-card>
+</div>

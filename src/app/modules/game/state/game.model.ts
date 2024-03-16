@@ -1,24 +1,18 @@
-import { People } from "../models/people/people.model";
-import { BattleResult } from "../models/battle-result.enum";
+import { GameOption } from "../enums/game-option.enum";
 import { PersonDetails } from "../models/people/person-details.model";
-import { Starships } from "../models/starships/starships.model";
-import { StarshipDetails } from "../../../modules/game/models/starships/starship-details.model";
-import { GameOption } from "../../../modules/game/models/game-option.enum";
+import { Winner } from "../enums/winner.enum";
+import { StarshipDetails } from "../models/starships/starship-details.model";
 
 export interface GameStateModel {
   isPlaying: boolean;
-  isLoading: boolean;
-  cardsReloading: boolean;
-  characters: People[];
-  ships: Starships[];
-  player: PersonDetails | null;
-  playerStarships: StarshipDetails | null;
-  computer: PersonDetails | null;
-  computerStarships: StarshipDetails | null;
-  playerResult: BattleResult;
-  computerResult: BattleResult;
-  playerWinCount: number;
-  computerWinCount: number;
-  isFinalWinner: boolean;
+  isCharactersLoading: boolean;
+  isCharacterDetailsLoading: boolean;
+  ids: string[];
+  player: PersonDetails | StarshipDetails | null;
+  playerScore: number;
+  computer: PersonDetails | StarshipDetails | null;
+  computerScore: number;
+  winner: Winner;
   gameOption: GameOption;
+  scoreLimit: number;
 }

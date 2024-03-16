@@ -1,0 +1,40 @@
+<div class="game-header">
+    <div class="select-game-option">
+        <mat-form-field>
+            <mat-label>People or starships</mat-label>
+            <mat-select [(value)]="gameOption"
+                        (selectionChange)="onGameOptionUpdate()"
+                        [disabled]="isCharactersLoading || isPlaying">
+                <mat-option *ngFor="let option of gameOptions"
+                            [value]="option">{{ option }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="game-buttons">
+        <div *ngIf="!isPlaying"
+             class="btn btn-play-game">
+            <button mat-flat-button
+                    color="primary"
+                    (click)="onStartGame()"
+                    [disabled]="!isCharactersLoaded">PLAY A GAME</button>
+        </div>
+
+        <ng-container *ngIf="isPlaying">
+            <div class="btn btn-play-game">
+                <button mat-flat-button
+                        color="primary"
+                        (click)="onNextRound(nextGame)"
+                        [disabled]="isCharacterDetailsLoading">
+                    {{ !nextGame ? 'NEXT ROUND' : 'PLAY AGAIN'}}
+                </button>
+            </div>
+
+            <div class="btn btn-end-game">
+                <button mat-stroked-button
+                        color="warn"
+                        (click)="onEndGame()">END GAME</button>
+            </div>
+        </ng-container>
+    </div>
+</div>

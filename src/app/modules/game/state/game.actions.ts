@@ -1,68 +1,78 @@
-import { GameOption } from "../../../modules/game/models/game-option.enum";
+import { GameOption } from "../enums/game-option.enum";
 
 export namespace Game {
 
-  export class IsLoading {
-    static readonly type = '[Game] Is Loading';
+  export class ClearCharactersList {
+    static readonly type = '[Game] Clear Characters List';
   }
 
-  export class IsLoaded {
-    static readonly type = '[Game] Is Loaded';
+  export class CharactersLoading {
+    static readonly type = '[Game] Characters Loading';
   }
 
-  export class CardsReloading {
-    static readonly type = '[Game] Cards Reloading';
+  export class CharactersLoaded {
+    static readonly type = '[Game] Characters Loaded';
   }
 
-  export class CardsReloaded {
-    static readonly type = '[Game] Cards Reloaded';
+  export class CharacterDetailsLoading {
+    static readonly type = '[Game] Character Details Loading';
+  }
+
+  export class CharacterDetailsLoaded {
+    static readonly type = '[Game] Character Details Loaded';
   }
 
   export class Start {
     static readonly type = '[Game] Start';
   }
 
-  export class End {
-    static readonly type = '[Game] End';
+  export class LoadPeopleList {
+    static readonly type = '[Game] Load People List';
   }
 
-  export class LoadCharacters {
-    static readonly type = '[Game] Load Characters';
+  export class LoadPeopleListFailed {
+    static readonly type = '[Game] Load People List Failed';
   }
 
-  export class LoadGame {
-    static readonly type = '[Game] Load Game';
-    constructor(public evokeError?: boolean) { }
+  export class LoadStarshipsList {
+    static readonly type = '[Game] Load Starships List';
+  }
+
+  export class LoadStarshipsListFailed {
+    static readonly type = '[Game] Load Starships List Failed';
+  }
+
+  export class EmptyCharactersListError {
+    static readonly type = '[Game] Empty Characters List Error';
   }
 
   export class CardsShuffle {
     static readonly type = '[Game] Cards Shuffle';
-    constructor(public evokeError?: boolean) { }
   }
 
   export class CardsShuffleFailed {
     static readonly type = '[Game] Cards Shuffle Failed';
   }
 
-  export class SetWinner {
-    static readonly type = '[Game] Set Winner';
-  }
-
-  export class ResetResults {
-    static readonly type = '[Game] Reset Results';
-  }
-
-  export class ResetScors {
-    static readonly type = '[Game] Reset Scores';
-  }
-
-  export class ResetPlayers {
-    static readonly type = '[Game] Reset Players';
+  export class UpdateScore {
+    static readonly type = '[Game] Update Score';
   }
 
   export class UpdateGameOption {
     static readonly type = '[Game] Update Game Option';
     constructor(public option: GameOption) { }
+  }
+
+  export class End {
+    static readonly type = '[Game] End';
+  }
+
+  export class PlayAgain {
+    static readonly type = '[Game] Play Again';
+  }
+
+  export class ResetScore {
+    static readonly type = '[Game] Reset Score';
   }
 
 }

@@ -1,73 +1,45 @@
-<mat-card class="card"
-          appBattleResult
-          [className]="battleResult">
-    <mat-spinner *ngIf="isLoading"
-                 class="spinner"></mat-spinner>
+<app-card [name]="starship?.name"
+          [description]="starship?.description"
+          [common]="starship?.crew"
+          [isLoading]="isLoading"
+          [score]="score"
+          [isWinner]="isWinner"
+          [isLoser]="isLoser"
+          [scoreLimit]="scoreLimit"
+          [computerLayout]="computerLayout"
+          [class.hero]="!computerLayout"
+          [class.villain]="computerLayout">
 
-    <ng-container *ngIf="!isLoading">
-        <mat-card-header class="header">
-            <mat-card-title class="header-title">{{ name }}</mat-card-title>
-            <mat-card-subtitle>{{ description }}</mat-card-subtitle>
-        </mat-card-header>
-
-        <img mat-card-image
-             class="img"
-             [src]="image"
-             alt="Photo of a person">
-
-        <mat-divider class="divider"></mat-divider>
-
-        <mat-card-content>
-            <div class="property">
-                <div class="property__name">Model:</div>
-                <div class="property__value truncate">{{ model }}</div>
-            </div>
-
-            <div class="property">
-                <div class="property__name">Class:</div>
-                <div class="property__value truncate">{{ starshipClass }}</div>
-            </div>
-
-            <div class="property">
-                <div class="property__name">Manufacturer:</div>
-                <div class="property__value truncate">{{ manufacturer }}</div>
-            </div>
-            <div class="property">
-                <div class="property__name">Cost:</div>
-                <div class="property__value">{{ costInCredits }}</div>
-            </div>
-            <div class="property">
-                <div class="property__name">Length:</div>
-                <div class="property__value">{{ length }}</div>
-            </div>
-            <div class="property common">
-                <div class="property__name">Crew:</div>
-                <div class="property__value">{{ crew }}</div>
-            </div>
-            <div class="property">
-                <div class="property__name">Passengers:</div>
-                <div class="property__value">{{ passengers }}</div>
-            </div>
-            <div class="property">
-                <div class="property__name">Max speed:</div>
-                <div class="property__value">{{ maxAtmospheringSpeed }}</div>
-            </div>
-            <div class="property">
-                <div class="property__name">Hyperdrive rating:</div>
-                <div class="property__value">{{ hyperdriveRating }}</div>
-            </div>
-            <div class="property">
-                <div class="property__name">MGLT:</div>
-                <div class="property__value">{{ mglt }}</div>
-            </div>
-            <div class="property">
-                <div class="property__name">Cargo capacity:</div>
-                <div class="property__value">{{ cargoCapacity }}</div>
-            </div>
-            <div class="property">
-                <div class="property__name">Consumables:</div>
-                <div class="property__value">{{ consumables }}</div>
-            </div>
-        </mat-card-content>
+    <ng-container propertyCommon>
+        <span class="common">CREW {{ starship?.crew }}</span>
     </ng-container>
-</mat-card>
+
+    <ng-container properties>
+        <div class="properties">
+            <app-card-property class="property"
+                               label="Length"
+                               [value]="starship?.length"></app-card-property>
+
+            <app-card-property class="property"
+                               label="Passangers"
+                               [value]="starship?.passengers"></app-card-property>
+
+            <app-card-property class="property"
+                               label="Max speed"
+                               [value]="starship?.maxAtmospheringSpeed"></app-card-property>
+
+            <app-card-property class="property"
+                               label="Hyperdrive rating"
+                               [value]="starship?.hyperdriveRating"></app-card-property>
+
+            <app-card-property class="property"
+                               label="MGLT"
+                               [value]="starship?.mglt"></app-card-property>
+
+
+            <app-card-property class="property"
+                               label="Consumables"
+                               [value]="starship?.consumables"></app-card-property>
+        </div>
+    </ng-container>
+</app-card>

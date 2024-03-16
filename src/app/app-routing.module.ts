@@ -8,10 +8,6 @@ const routes: Routes = [
     loadChildren: () => import('./modules/game/game.module')
   },
   {
-    path: 'stats',
-    loadChildren: () => import('./modules/stats/stats.module')
-  },
-  {
     path: '**', redirectTo: 'battlefield', pathMatch: 'full'
   }
 ];

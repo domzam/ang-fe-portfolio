@@ -1,18 +1,22 @@
 import { NgModule } from "@angular/core";
-import { GameCardComponent } from "./components/game-card/game-card.component";
-import { BattlefieldComponent } from "./views/battlefield/battlefield.component";
-import { StarshipCardComponent } from "./components/starship-card/starship-card.component";
 import { MaterialModule } from "../material/material.module";
 import { SharedModule } from "../shared/shared.module";
 import { GameRoutingModule } from "./game-routing.module";
-import { BattlefieldHeaderComponent } from "./components/battlefield-header/battlefield-header.component";
+import { GameHeaderComponent } from "./components/game-header/game-header.component";
+import { CardComponent } from "./components/card/card.component";
+import { GameComponent } from "./views/game/game.component";
+import { PersonCardComponent } from "./components/person-card/person-card.component";
+import { StarshipCardComponent } from "./components/starship-card/starship-card.component";
+import { CardPropertyComponent } from "./components/card-property/card-property.component";
 
 @NgModule({
   declarations: [
-    GameCardComponent,
+    GameHeaderComponent,
+    CardComponent,
+    PersonCardComponent,
     StarshipCardComponent,
-    BattlefieldComponent,
-    BattlefieldHeaderComponent
+    GameComponent,
+    CardPropertyComponent
   ],
   imports: [
     SharedModule,
