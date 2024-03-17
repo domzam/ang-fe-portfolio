@@ -34,7 +34,7 @@
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/app/stylings"]
+              "includePaths": ["src/assets/scss"]
             },
             "scripts": []
           },
@@ -101,7 +101,7 @@
               "src/styles.scss"
             ],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/app/stylings"]
+              "includePaths": ["src/assets/scss"]
             },
             "scripts": []
           }

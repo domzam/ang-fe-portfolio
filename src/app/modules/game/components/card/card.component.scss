@@ -1,3 +1,5 @@
+@import "colors";
+
 .card-header {
     padding: 2.4rem 0 4.8rem;
 
@@ -64,7 +66,7 @@
             font-size: 9.8rem;
             height: 9.8rem;
             width: 9.8rem;
-            color: #999;
+            color: $text-color-secondary;
             margin: auto;
         }
     }

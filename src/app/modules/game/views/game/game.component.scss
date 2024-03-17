@@ -1,3 +1,5 @@
+@import "colors";
+
 .game {
   grid-template-columns: 5fr 1fr;
   margin: 3.2rem 0;
@@ -32,8 +34,8 @@
 
   strong {
     font-weight: 500;
-    color: white;
-    background-color: #bbb;
+    color: $color-white;
+    background-color: $text-color-secondary;
     padding: 0.8rem 1.6rem;
     border-radius: 5px;
   }
@@ -46,7 +48,7 @@
   align-items: center;
   font-size: 1.6rem;
   padding: 3.2rem 0;
-  color: #999;
+  color: $text-color-secondary;
 }
 
 @media (max-width: 62.5em) {
