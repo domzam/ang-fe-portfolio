@@ -1,13 +1,13 @@
 export class CardComponent {
 
-  private index = 0;
+  get scoreHeader() { return cy.get('.card-header').eq(this.index) }
 
-  get it() { return cy.get('.card').eq(this.index); }
-  get titleText() { return this.it.find('.header-title'); }
+  get cardContent() { return cy.get('.card').eq(this.index); }
+  get cardImage() { return this.cardContent.find('img'); }
+  get cardCommonProperty() { return this.cardContent.find('.common'); }
+  get cardTitle() { return this.cardContent.find('mat-card-title'); }
+  get cardProperties() { return this.cardContent.find('.properties'); }
 
-
-  constructor(index: number) {
-    this.index = index;
-  }
+  constructor(private index: number = 0) {}
 
 }
